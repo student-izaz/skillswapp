@@ -45,7 +45,7 @@ export const UserProvider = ({ children }) => {
   const API_URL =
     process.env.NODE_ENV === "development"
       ? "http://localhost:5000"
-      : "https://skillswapp-199i.onrender.com";
+      : "https://skillswapp-yslg.onrender.com";
 
   return (
     <UserContext.Provider
