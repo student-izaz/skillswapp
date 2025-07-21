@@ -16,7 +16,6 @@ import PrivateRoute from './components/PrivateRoute';
 const App = () => {
   const { user, token, isLoggedIn } = useUserContext();
 
-
   return (
     <Routes>
       {/* Public Routes */}

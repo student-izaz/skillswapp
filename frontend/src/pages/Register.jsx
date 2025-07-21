@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../store/UserContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const RegisterForm = () => {
   const [registerData, setRegisterData] = useState({
@@ -10,6 +11,8 @@ const RegisterForm = () => {
     confirmPassword: "",
   });
   const {API_URL} = useUserContext();
+  const [loading, setLoadig] = useState(false);
+  
 
   const handleChange = (e) => {
     setRegisterData({ ...registerData, [e.target.name]: e.target.value });
@@ -19,6 +22,7 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoadig(true);
 
     if (registerData.password !== registerData.confirmPassword) {
       alert("Passwords do not match");
@@ -50,6 +54,7 @@ const RegisterForm = () => {
         console.error("❌ Register failed:", data.message || "Unknown error");
         alert(data.message || "Registration failed");
       }
+      setLoadig(false)
     } catch (error) {
       console.error("🚨 Error:", error);
       alert("Something went wrong. Please try again.");
@@ -125,7 +130,7 @@ const RegisterForm = () => {
           type="submit"
           className="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
         >
-          Register
+          {loading ? <LoadingSpinner/> : "Register"}
         </button>
 
         {/* Already have an account */}

@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema(
       github: String,
       linkedin: String,
     },
+    isProfileComplete: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

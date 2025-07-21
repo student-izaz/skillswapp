@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../store/UserContext";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const MultiStepForm = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-  gender: "",
-  phone: "",
-  age: "",
-  country: "",
-  state: "",
-  skillsOffered: "",
-  skillsWanted: "",
-});
-
-const { token, API_URL, login } = useUserContext();
-  console.log(token)
+    gender: "",
+    phone: "",
+    age: "",
+    country: "",
+    state: "",
+    skillsOffered: "",
+    skillsWanted: "",
+  });
+  const [loading, setLoading] = useState();
+  // console.log(token)
 
   const navigate = useNavigate();
 
@@ -35,40 +35,56 @@ const { token, API_URL, login } = useUserContext();
     nextStep();
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const { user, token, API_URL, login } = useUserContext();
 
-  const payload = {
-    gender: formData.gender,
-    phone: formData.phone,
-    age: formData.age,
-    country: formData.country,
-    state: formData.state,
-    skillsToTeach: formData.skillsOffered.split(",").map((s) => s.trim()),
-    skillsToLearn: formData.skillsWanted.split(",").map((s) => s.trim()),
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const payload = {
+      gender: formData.gender,
+      phone: formData.phone,
+      age: formData.age,
+      country: formData.country,
+      state: formData.state,
+      skillsToTeach: formData.skillsOffered.split(",").map((s) => s.trim()),
+      skillsToLearn: formData.skillsWanted.split(",").map((s) => s.trim()),
+      isProfileComplete: true, 
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/api/profile/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // send your access token
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log(data)
+
+        login({
+          userData: data.user,
+          tokenData: data.token,
+        });
+
+        // toast.success("Profile created successfully");
+        navigate("/home");
+      } else {
+        console.error("Profile creation failed:", data.message);
+        alert(data.message || "Something went wrong.");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      alert("Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const response = await fetch(`${API_URL}/api/profile/create`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload),
-  });
-
-  const data = await response.json();
-
-  // ✅ Make sure to call login() again if backend returns updated user info/token
-  if (response.ok) {
-    login({ userData: data.user, tokenData: token });
-    navigate("/home");
-  } else {
-    console.error("Error:", data);
-  }
-};
-
-
 
   const progressPercentage = (step / 3) * 100;
 
@@ -85,7 +101,9 @@ const { token, API_URL, login } = useUserContext();
         </button>
       )}
 
-      <h2 className="text-2xl text-gray-800 font-bold mb-4">Step {step} of 3</h2>
+      <h2 className="text-2xl text-gray-800 font-bold mb-4">
+        Step {step} of 3
+      </h2>
 
       {/* Progress Bar */}
       <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-6">
@@ -96,10 +114,13 @@ const { token, API_URL, login } = useUserContext();
       </div>
 
       {/* Heading Text */}
-      <h3 className="text-2xl font-bold text-yellow-500 mb-2">Let's Get to Know You 👋</h3>
+      <h3 className="text-2xl font-bold text-yellow-500 mb-2">
+        Let's Get to Know You 👋
+      </h3>
       <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-        Please fill in a few quick details to help others discover your talents and the skills you're interested in learning.
-        This won’t take more than a minute!
+        Please fill in a few quick details to help others discover your talents
+        and the skills you're interested in learning. This won’t take more than
+        a minute!
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -207,7 +228,7 @@ const { token, API_URL, login } = useUserContext();
               type="submit"
               className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
             >
-              Submit
+              {loading ? <LoadingSpinner /> : "Submit"}
             </button>
           )}
         </div>

@@ -31,7 +31,12 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user);
-    res.json({ user, token });
+    res.json({ token,user: {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isProfileComplete: user.isProfileComplete,
+  } });
   } catch (error) {
     res.status(500).json({ message: 'Login failed', error: error.message });
   }
