@@ -65,8 +65,6 @@ const MultiStepForm = () => {
       const data = await res.json();
 
       if (res.ok) {
-        console.log(data)
-
         login({
           userData: data.user,
           tokenData: data.token,
