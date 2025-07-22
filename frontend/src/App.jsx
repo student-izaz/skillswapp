@@ -1,7 +1,6 @@
 import './App.css';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Start from './pages/Start';
@@ -17,11 +16,8 @@ import Spinner from './components/Spinner';
 const App = () => {
   const { isLoggedIn, loading } = useUserContext();
 
-if (loading) return <Spinner/>; 
+  if (loading) return <Spinner />;
 
-if (!isLoggedIn()) {
-  return <Navigate to="/login" />;
-}
   return (
     <Routes>
       {/* Public Routes */}

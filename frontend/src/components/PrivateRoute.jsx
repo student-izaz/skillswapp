@@ -11,7 +11,7 @@ const PrivateRoute = ({ children }) => {
     return <div className="text-center mt-10"><LoadingSpinner/></div>
   }
 
-  return isLoggedIn() ? children : <Navigate to="/login" replace />;
+  return isLoggedIn() ? children : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
