@@ -8,6 +8,7 @@ export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true); // wait for localStorage check
 
+
   // ✅ Restore user/token from localStorage
   useEffect(() => {
     try {

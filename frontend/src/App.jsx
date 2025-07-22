@@ -12,10 +12,16 @@ import MultiStepForm from './pages/MultiStepForm';
 import MySkills from './pages/MySkillsPage';
 import { useUserContext } from './store/UserContext';
 import PrivateRoute from './components/PrivateRoute';
+import Spinner from './components/Spinner';
 
 const App = () => {
-  const { user, token, isLoggedIn } = useUserContext();
+  const { isLoggedIn, loading } = useUserContext();
 
+if (loading) return <Spinner/>; 
+
+if (!isLoggedIn()) {
+  return <Navigate to="/login" />;
+}
   return (
     <Routes>
       {/* Public Routes */}

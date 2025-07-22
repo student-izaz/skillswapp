@@ -279,42 +279,6 @@ export const Users = [
     phone_no: 9799999999
   },
   {
-    id: 21,
-    name: "Ayesha Khan",
-    title: "Frontend Developer",
-    image: "https://randomuser.me/api/portraits/women/21.jpg",
-    description: "React enthusiast looking to dive into backend development.",
-    skillsOffered: ["HTML", "CSS", "ReactJS"],
-    skillsWanted: ["Node.js", "MongoDB"],
-    location: "Mumbai, India",
-    email: "ayesha.khan@example.com",
-    phone_no: 9876543210
-  },
-  {
-    id: 22,
-    name: "Kunal Verma",
-    title: "Backend Developer",
-    image: "https://randomuser.me/api/portraits/men/22.jpg",
-    description: "Passionate about server-side development and REST APIs.",
-    skillsOffered: ["Node.js", "Express", "PostgreSQL"],
-    skillsWanted: ["React", "UI/UX"],
-    location: "Delhi, India",
-    email: "kunal.verma@example.com",
-    phone_no: 9876543211
-  },
-  {
-    id: 23,
-    name: "Sneha Rao",
-    title: "Data Scientist",
-    image: "https://randomuser.me/api/portraits/women/23.jpg",
-    description: "Enjoys making sense of data. Wants to build full-stack apps.",
-    skillsOffered: ["Python", "Pandas", "Machine Learning"],
-    skillsWanted: ["ReactJS", "Node.js"],
-    location: "Hyderabad, India",
-    email: "sneha.rao@example.com",
-    phone_no: 9876543212
-  },
-  {
     id: 24,
     name: "Ankit Sharma",
     title: "DevOps Engineer",

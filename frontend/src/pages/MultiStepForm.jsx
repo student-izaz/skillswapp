@@ -37,6 +37,13 @@ const MultiStepForm = () => {
 
   const { user, token, API_URL, login } = useUserContext();
 
+  useEffect(() => {
+  // Navigate only when token is set (means login successful)
+  if (token && user) {
+    navigate("/home");
+  }
+}, [token, user, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -49,7 +56,7 @@ const MultiStepForm = () => {
       state: formData.state,
       skillsToTeach: formData.skillsOffered.split(",").map((s) => s.trim()),
       skillsToLearn: formData.skillsWanted.split(",").map((s) => s.trim()),
-      isProfileComplete: true, 
+      isProfileComplete: true,
     };
 
     try {
@@ -71,7 +78,7 @@ const MultiStepForm = () => {
         });
 
         // toast.success("Profile created successfully");
-        navigate("/home");
+  
       } else {
         console.error("Profile creation failed:", data.message);
         alert(data.message || "Something went wrong.");
