@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
       if (storedUser) setUser(JSON.parse(storedUser));
       if (storedToken) setToken(storedToken);
     } catch (error) {
-      console.error("❌ Error restoring session:", error);
+      console.error("Error restoring session:", error);
     } finally {
       setLoading(false);
     }

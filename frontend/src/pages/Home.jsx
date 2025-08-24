@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import UsersCardPage from "./UsersCardPage";
 import { Users } from "../DummyUsers/dummyUsers";
 import MessageWindow from "./UsersChatList"; // This is your chat list page
+import { useUserContext } from "../store/UserContext";
 
 const HomePage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -11,6 +12,9 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [users] = useState(Users);
   const messageRef = useRef(null);
+  const { user } = useUserContext();
+
+  console.log(user)
 
   // Filter users
   const filteredUsers = users.filter((user) => {

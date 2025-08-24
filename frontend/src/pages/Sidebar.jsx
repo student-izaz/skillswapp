@@ -10,7 +10,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-90 z-40"
+          className="fixed inset-0  bg-opacity-90 z-40"
           onClick={() => setIsOpen(false)}
         ></div>
       )}

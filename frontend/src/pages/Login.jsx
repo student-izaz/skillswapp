@@ -6,7 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 const Login = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const { API_URL, login } = useUserContext();
-  const [loading, setLoadig] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,7 +16,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoadig(true);
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
@@ -27,18 +27,18 @@ const Login = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        console.error("❌ Login failed:", data.message || "Unknown error");
+        console.error("Login failed:", data.message || "Unknown error");
         return alert(data.message || "Login failed");
       }
 
-      // ✅ Update user context and localStorage
+      // Update user context and localStorage
       login({ userData: data.user, tokenData: data.token });
 
-      // ✅ Navigate conditionally
+      // Navigate conditionally
       navigate(data.user.isProfileComplete ? "/home" : "/multi-step-form");
-      setLoadig(false)
+      setLoading(false);
     } catch (err) {
-      console.error("❌ Login error:", err);
+      console.error("Login error:", err);
       alert("Something went wrong. Please try again.");
     }
   };

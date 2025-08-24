@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { myProfile } = require('../controllers/myProfileController');
+const { createProfile, getProfile } = require('../controllers/myProfileController');
 const protect = require('../middleware/authMiddleware');
 
-router.post('/create', protect, myProfile);
+router.get('/get', protect, getProfile);
+router.post('/create', protect, createProfile);
 
 module.exports = router;

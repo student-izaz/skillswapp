@@ -1,6 +1,6 @@
 const User = require("../models/userModel");
 
-const myProfile = async (req, res) => {
+const createProfile = async (req, res) => {
   try {
     const userId = req.user.userId;
     const updateData = req.body;
@@ -27,4 +27,23 @@ const myProfile = async (req, res) => {
   }
 };
 
-module.exports = { myProfile };
+const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Profile fetched successfully",
+      user,
+    });
+  } catch (error) {
+    console.error("Fetch error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { createProfile, getProfile };

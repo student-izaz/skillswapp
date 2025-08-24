@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'; // if using React Router
 
 const Start = ({isloggedin}) => {
       const navigate = useNavigate();
-      console.log(isloggedin)
+      // console.log(isloggedin)
        useEffect(() => {
     const timer = setTimeout(() => {
       isloggedin ? navigate('/home') : navigate('/login'); 
@@ -22,8 +22,6 @@ const Start = ({isloggedin}) => {
 </h1>
 
 </div>
-
-
 
   )
 }

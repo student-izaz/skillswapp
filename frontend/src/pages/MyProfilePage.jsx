@@ -1,21 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useUserContext } from "../store/UserContext";
 
 const MyProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const { user, token, API_URL } = useUserContext();
 
-  const [user, setUser] = useState({
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
-    name: "Aarav Mehta",
-    title: "Full Stack Developer",
-    description:
-      "I'm a passionate developer with 3+ years of experience in building full-stack apps.",
-    skillsOffered: ["React", "Node.js", "MongoDB"],
-    skillsWanted: ["DevOps", "UI/UX"],
-    email: "aarav@example.com",
-    location: "Mumbai, India",
-  });
+  const [formData, setFormData] = useState(user ?? {});
 
-  const [formData, setFormData] = useState({ ...user });
+  // Fetch user data from backend
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/users/me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setFormData({ ...data });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  // Update formData when user changes
+  useEffect(() => {
+    if (user) {
+      setFormData(user);
+    }
+  }, [user]);
+
+  // Fetch user data when mounted
+  useEffect(() => {
+    fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,13 +44,14 @@ const MyProfile = () => {
   };
 
   const saveChanges = () => {
-    setUser(formData);
+    // 🔹 Here you should send `formData` to backend to update user profile
+    console.log("Saving changes:", formData);
     setIsEditing(false);
   };
 
-  return (
-    <div className="min-h-screen flex justify-center p-6 bg-gray-50">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl">
+    return (
+    <div className="min-h-screen flex justify-center p-6 bg-gray-100">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-gray-800">My Profile</h1>
@@ -42,122 +64,136 @@ const MyProfile = () => {
             </button>
           )}
         </div>
-          <p className="text-gray-600 mb-4 text-sm text-center">
-              Keep your profile up to date so others can discover your skills and connect with you for the perfect skill swap. Your profile reflects your passions — make it shine! ✨
-          </p>
 
-        {/* Profile Image */}
-        <div className="text-center">
-          <img
-            src={user.image}
-            alt="Profile"
-            className="w-24 h-24 rounded-full mx-auto border-2 object-cover shadow"
-          />
-        </div>
+        <p className="text-gray-600 mb-6 text-sm text-center">
+          Keep your profile up to date so others can discover your skills and
+          connect with you for the perfect skill swap. ✨
+        </p>
 
-        {/* Editable Fields */}
-        <div className="mt-6 space-y-4">
+        {/* Profile Info */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
           {[
             { label: "Name", name: "name" },
-            { label: "Title", name: "title" },
-            { label: "Location", name: "location" },
             { label: "Email", name: "email" },
+            { label: "Phone", name: "phone" },
+            { label: "Gender", name: "gender" },
+            { label: "Country", name: "country" },
           ].map((field) => (
             <div key={field.name}>
-              <label className="block text-sm font-medium text-gray-700">
-                {field.label}
-              </label>
+              <p className="text-xs text-gray-500">{field.label}</p>
               {isEditing ? (
                 <input
                   name={field.name}
-                  value={formData[field.name]}
+                  value={formData?.[field.name] ?? ""}
                   onChange={handleChange}
-                  className="w-full border px-3 py-2 rounded mt-1"
+                  className="w-full border px-3 py-2 rounded mt-1 text-sm"
                 />
               ) : (
-                <p className="text-gray-800">{user[field.name]}</p>
+                <p className="font-semibold text-gray-800">
+                  {formData?.[field.name] ?? "—"}
+                </p>
               )}
             </div>
           ))}
 
-          {/* Description */}
+          {/* Profile Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
-            {isEditing ? (
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className="w-full border px-3 py-2 rounded mt-1"
-              />
-            ) : (
-              <p className="text-gray-800">{user.description}</p>
-            )}
+            <p className="text-xs text-gray-500">Profile Status</p>
+            <p
+              className={`font-semibold ${
+                formData?.isProfileComplete ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {formData?.isProfileComplete ? "Complete ✅" : "Incomplete ❌"}
+            </p>
           </div>
 
-          {/* Skills Offered */}
+          {/* Dates */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Skills Offered
-            </label>
-            {isEditing ? (
-              <input
-                name="skillsOffered"
-                value={formData.skillsOffered.join(", ")}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    skillsOffered: e.target.value.split(",").map((s) => s.trim()),
-                  })
-                }
-                className="w-full border px-3 py-2 rounded mt-1"
-              />
-            ) : (
-              <div className="flex flex-wrap gap-2 mt-1">
-                {user.skillsOffered.map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            )}
+            <p className="text-xs text-gray-500">Created At</p>
+            <p className="text-sm text-gray-700">
+              {new Date(formData?.createdAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </p>
           </div>
+          <div>
+            <p className="text-xs text-gray-500">Last Updated</p>
+            <p className="text-sm text-gray-700">
+              {new Date(formData?.updatedAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </p>
+          </div>
+        </div>
 
-          {/* Skills Wanted */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Skills Wanted
-            </label>
-            {isEditing ? (
-              <input
-                name="skillsWanted"
-                value={formData.skillsWanted.join(", ")}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    skillsWanted: e.target.value.split(",").map((s) => s.trim()),
-                  })
-                }
-                className="w-full border px-3 py-2 rounded mt-1"
-              />
-            ) : (
-              <div className="flex flex-wrap gap-2 mt-1">
-                {user.skillsWanted.map((skill, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+        {/* Skills Section */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            Skills To Teach
+          </h2>
+          {isEditing ? (
+            <input
+              name="skillsToTeach"
+              value={formData?.skillsToTeach?.join(", ") ?? ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  skillsToTeach: e.target.value.split(",").map((s) => s.trim()),
+                })
+              }
+              className="w-full border px-3 py-2 rounded mt-1"
+            />
+          ) : formData?.skillsToTeach?.length ? (
+            <div className="flex flex-wrap gap-2">
+              {formData.skillsToTeach.map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm">No skills added</p>
+          )}
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            Skills To Learn
+          </h2>
+          {isEditing ? (
+            <input
+              name="skillsToLearn"
+              value={formData?.skillsToLearn?.join(", ") ?? ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  skillsToLearn: e.target.value.split(",").map((s) => s.trim()),
+                })
+              }
+              className="w-full border px-3 py-2 rounded mt-1"
+            />
+          ) : formData?.skillsToLearn?.length ? (
+            <div className="flex flex-wrap gap-2">
+              {formData.skillsToLearn.map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm">No skills added</p>
+          )}
         </div>
 
         {/* Buttons */}
@@ -167,7 +203,7 @@ const MyProfile = () => {
               className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
               onClick={() => {
                 setIsEditing(false);
-                setFormData(user); // Reset
+                setFormData(user ?? {}); // Reset
               }}
             >
               Cancel
